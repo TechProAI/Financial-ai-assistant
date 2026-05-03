@@ -13,7 +13,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'https://financial-ai-assistant-pknn.onrender.com',
         changeOrigin: true,
         rewrite: (p) => p.replace(/^\/api/, ''),
       },
