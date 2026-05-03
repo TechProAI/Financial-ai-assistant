@@ -1,7 +1,7 @@
 const TechStack = () => {
     return (
         <>
-            <section className="max-w-6xl mx-auto px-6 pb-20 md:pb-28">
+            <section className="max-w-6xl mx-auto px-6 pb-20 md:pb-28" id="tech-stack">
                 <p className="text-[11px] uppercase tracking-[0.2em] text-emerald-accent mb-3">
                     Tech Stack
                 </p>

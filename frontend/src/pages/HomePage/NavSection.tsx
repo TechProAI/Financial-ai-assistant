@@ -33,7 +33,7 @@ const NavSection = () => {
 
                     {/* Desktop Links */}
                     <div className="hidden md:flex items-center gap-8">
-                        {['Features', 'How It Works', 'FAQ'].map((item) => (
+                        {['Features', 'How It Works', 'Tech Stack'].map((item) => (
                             <a key={item} href={`#${item.toLowerCase().replace(/ /g, '-')}`} className="text-sm text-bone-300 hover:text-bone-50 transition-colors">
                                 {item}
                             </a>
