@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  body {
+    @apply bg-ink-950 text-bone-100 font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(74,222,128,0.08), transparent),
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    @apply bg-emerald-accent/30 text-bone-50;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-ink-900;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-ink-700 rounded-full border-2 border-ink-900;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-ink-600;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-ink-900/60 backdrop-blur-sm border border-white/[0.06] rounded-xl shadow-card;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:border-emerald-accent/30 hover:shadow-glow-emerald;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-ink-950 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-emerald-accent text-ink-950 hover:bg-emerald-deep focus:ring-emerald-accent;
+  }
+
+  .btn-ghost {
+    @apply btn text-bone-200 hover:bg-ink-800 hover:text-bone-50;
+  }
+
+  .input-base {
+    @apply w-full bg-ink-900 border border-ink-700 rounded-lg px-3 py-2 text-bone-100 placeholder:text-ink-500 focus:outline-none focus:border-emerald-accent/50 focus:ring-2 focus:ring-emerald-accent/20 transition-all;
+  }
+
+  .metric-value {
+    @apply font-mono text-2xl font-semibold tabular-nums;
+  }
+
+  .label-overline {
+    @apply text-[10px] uppercase tracking-[0.2em] text-bone-400 font-medium;
+  }
+
+  .divider-ornament {
+    @apply flex items-center gap-3 text-bone-400;
+  }
+  .divider-ornament::before,
+  .divider-ornament::after {
+    content: '';
+    @apply flex-1 h-px bg-gradient-to-r from-transparent via-ink-700 to-transparent;
+  }
+}
