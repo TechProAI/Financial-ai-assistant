@@ -15,7 +15,6 @@ interface Props {
 export function AddHoldingForm({ onAdd }: Props) {
 
   const [results, setResults] = useState<TickerResult[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
   const [open, setOpen] = useState<boolean>(false)
   const [rect, setRect] = useState<DOMRect | null>(null)
   const [stock, setStock] = useState<string | null>(null)
@@ -39,7 +38,7 @@ export function AddHoldingForm({ onAdd }: Props) {
     }
     if (tickerValue === '') return
     const timer = setTimeout(async () => {
-      setLoading(true)
+
       try {
         const  {results}  = await searchSymbol(tickerValue.trim())
         console.log("RESULTS",results)
@@ -50,7 +49,7 @@ export function AddHoldingForm({ onAdd }: Props) {
       } catch {
         setResults([])
       } finally {
-        setLoading(false)
+        
       }
     }, 300)
     return () => clearTimeout(timer)
