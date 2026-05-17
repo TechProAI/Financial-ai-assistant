@@ -134,6 +134,7 @@ def compute_metrics(
     if not recs:
         recs.append("Portfolio looks reasonably balanced. Continue monitoring and rebalance periodically.")
 
+
     return {
         "total_value": round(total_value, 2),
         "total_cost": round(total_cost, 2),
