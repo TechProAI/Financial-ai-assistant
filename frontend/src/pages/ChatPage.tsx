@@ -40,7 +40,7 @@ export function ChatPage() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 min-h-[calc(100vh-4rem)]">
       <div className="flex flex-col">
-        {/* Header */}
+        
         <div className="flex items-center justify-between mb-6">
           <div>
             <p className="label-overline">Conversation</p>
@@ -56,7 +56,7 @@ export function ChatPage() {
           )}
         </div>
 
-        {/* Messages */}
+        
         <div className="flex-1 space-y-5 mb-6">
           {chatHistory.length === 0 ? (
             <EmptyState
@@ -80,7 +80,7 @@ export function ChatPage() {
           <div ref={endRef} />
         </div>
 
-        {/* Suggestions */}
+       
         {chatHistory.length === 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
             {SUGGESTIONS.map((s) => (
@@ -95,10 +95,8 @@ export function ChatPage() {
           </div>
         )}
 
-        {/* Input */}
         <ChatInput onSubmit={send} disabled={isLoading} />
 
-        {/* Disclaimers */}
         {lastResponse?.disclaimers && lastResponse.disclaimers.length > 0 && (
           <div className="mt-4 space-y-1">
             {lastResponse.disclaimers.map((d, i) => (
@@ -110,7 +108,6 @@ export function ChatPage() {
         )}
       </div>
 
-      {/* Sidebar: citations + trace */}
       <div className="space-y-4">
         {lastResponse?.citations && <CitationList citations={lastResponse.citations} />}
         {lastResponse?.agent_trace && <AgentTrace trace={lastResponse.agent_trace} />}

@@ -7,7 +7,6 @@ export const api = axios.create({
   timeout: 60_000,
 })
 
-// Automatically attach auth token to every request
 api.interceptors.request.use(async (config) => {
   const { data: { session } } = await supabase.auth.getSession()
   if (session?.access_token) {

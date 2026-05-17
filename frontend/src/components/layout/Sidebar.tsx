@@ -28,7 +28,7 @@ export function Sidebar() {
   return (
     <>
     <aside className="w-72 shrink-0 border-r border-white/[0.06] bg-ink-950/60 backdrop-blur-sm flex flex-col h-screen sticky top-0">
-      {/* Brand */}
+      
       <div className="p-6 border-b border-white/[0.06]">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-accent to-emerald-dark flex items-center justify-center shadow-glow-emerald">
@@ -45,7 +45,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Nav */}
+      
       <nav className="p-4 space-y-1">
         <p className="label-overline px-3 mb-3">Workspace</p>
         {navItems.map(({ to, label, icon: Icon, hint }) => (
@@ -72,7 +72,6 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Chat Sessions */}
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="flex items-center justify-between mb-3">
           <p className="label-overline px-3">Chat History</p>
@@ -114,7 +113,6 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* User & Logout */}
       <div className="p-4 border-t border-white/[0.06]">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-ink-800 border border-ink-700 flex items-center justify-center text-bone-300 text-xs font-semibold">

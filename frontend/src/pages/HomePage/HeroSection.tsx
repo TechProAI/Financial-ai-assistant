@@ -8,13 +8,13 @@ const HeroSection = () => {
     return (
         <>
             <section className="max-w-6xl mx-auto relative pt-20 pb-20 md:pt-44 md:pb-32 overflow-hidden mb-10">
-                {/* Decorative glows */}
+                
                 <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-emerald-accent/[0.07] rounded-full blur-[120px] -translate-y-1/2" />
                 <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-amber-accent/[0.05] rounded-full blur-[100px] translate-y-1/2" />
 
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-                        {/* Left: copy */}
+                        
                         <div>
                             <Reveal>
                                 <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-emerald-accent bg-emerald-accent/10 border border-emerald-accent/20 rounded-full px-4 py-1.5 mb-6">
@@ -65,7 +65,7 @@ const HeroSection = () => {
                             </Reveal>
                         </div>
 
-                        {/* Right: mock chat UI */}
+                        
                         <Reveal delay={200} className="hidden md:block">
                             <div className="relative">
                                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-accent/10 to-transparent rounded-3xl blur-2xl scale-110" />
@@ -81,7 +81,7 @@ const HeroSection = () => {
                                         </div>
                                     </div>
 
-                                    {/* Messages */}
+                                    
                                     <div className="space-y-4 mb-4">
                                         <div className="flex justify-end">
                                             <div className="bg-ink-800 border border-ink-700 rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-bone-100 max-w-[80%]">
@@ -99,14 +99,14 @@ const HeroSection = () => {
                                         </div>
                                     </div>
 
-                                    {/* Citation */}
+                                    
                                     <div className="bg-ink-950/60 rounded-lg px-3 py-2 border-l-2 border-emerald-accent/50">
                                         <div className="text-[10px] uppercase tracking-wider text-bone-400 mb-1">Source</div>
                                         <div className="text-xs text-bone-200">[1] Sharpe Ratio Explained</div>
                                         <div className="text-[10px] text-emerald-accent/70 font-mono mt-0.5">relevance 94%</div>
                                     </div>
 
-                                    {/* Agent trace */}
+                                    
                                     <div className="mt-4 pt-3 border-t border-white/[0.06]">
                                         <div className="text-[10px] uppercase tracking-wider text-bone-400 mb-2">Agent Trace</div>
                                         <div className="flex gap-1 items-center">

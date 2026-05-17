@@ -38,7 +38,6 @@ export function TickerSearch({ onSearch }: Props) {
     return () => clearTimeout(timer)
   }, [value])
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {

@@ -41,7 +41,6 @@ export function AddHoldingForm({ onAdd }: Props) {
 
       try {
         const  {results}  = await searchSymbol(tickerValue.trim())
-        console.log("RESULTS",results)
         setResults(results)
         if(!stock){
           setOpen(true)
@@ -53,7 +52,6 @@ export function AddHoldingForm({ onAdd }: Props) {
       }
     }, 300)
     return () => clearTimeout(timer)
-    console.log("TICKER VALUE",tickerValue)
   },[tickerValue])
 
   useEffect(() => {

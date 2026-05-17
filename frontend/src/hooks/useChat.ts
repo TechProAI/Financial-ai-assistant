@@ -37,7 +37,6 @@ export function useChat() {
       }
       setChatHistory([...nextHistory, assistantMsg])
 
-      // Save assistant message to Supabase with full metadata
       await saveChatMessage({
         role: 'assistant',
         content: res.answer,

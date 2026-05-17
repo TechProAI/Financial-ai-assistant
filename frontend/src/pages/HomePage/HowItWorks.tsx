@@ -44,7 +44,7 @@ const HowItWorks = () => {
                     ))}
                 </div>
 
-                {/* Simple flow diagram */}
+                
                 <div className="mt-10 bg-ink-900/30 border border-white/[0.06] rounded-xl p-6 overflow-x-auto">
                     <div className="flex items-center gap-3 min-w-[600px] justify-center text-xs font-mono">
                         <span className="bg-ink-800 border border-ink-700 rounded-lg px-3 py-2 text-bone-200">User</span>

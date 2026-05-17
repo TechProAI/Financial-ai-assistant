@@ -43,7 +43,7 @@ export function AuthPage() {
   return (
     <div className="min-h-screen bg-ink-950 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        {/* Logo */}
+        
         <div className="flex items-center justify-center gap-2.5 mb-8">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-accent to-emerald-dark flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-ink-950" strokeWidth={2.5} />
@@ -51,7 +51,7 @@ export function AuthPage() {
           <span className="font-display text-2xl font-semibold text-bone-50">Finnie</span>
         </div>
 
-        {/* Card */}
+        
         <div className="bg-ink-900/60 border border-white/[0.06] rounded-2xl p-7">
           <h2 className="font-display text-xl font-semibold text-bone-50 text-center mb-1">
             {mode === 'login' ? 'Welcome back' : 'Create your account'}
@@ -62,7 +62,7 @@ export function AuthPage() {
               : 'Start your financial learning journey'}
           </p>
 
-          {/* Google button */}
+          
           <button
             onClick={handleGoogle}
             className="w-full flex items-center justify-center gap-2 bg-ink-800 border border-ink-700 rounded-lg py-2.5 text-sm text-bone-200 hover:bg-ink-700 hover:text-bone-50 transition-colors mb-5"
@@ -76,14 +76,12 @@ export function AuthPage() {
             Continue with Google
           </button>
 
-          {/* Divider */}
           <div className="flex items-center gap-3 mb-5">
             <div className="flex-1 h-px bg-ink-700" />
             <span className="text-xs text-bone-500">or</span>
             <div className="flex-1 h-px bg-ink-700" />
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'signup' && (
               <div>
@@ -149,7 +147,6 @@ export function AuthPage() {
             </button>
           </form>
 
-          {/* Toggle */}
           <p className="text-sm text-bone-400 text-center mt-5">
             {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
             <button

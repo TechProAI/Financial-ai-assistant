@@ -13,7 +13,6 @@ const NavSection = () => {
     useEffect(() => {
         const h = () => setScrolled(window.scrollY > 40)
         window.addEventListener('scroll', h, { passive: true })
-        console.log("USER",user)
         return () => window.removeEventListener('scroll', h)
     }, [])
 
@@ -21,7 +20,7 @@ const NavSection = () => {
         <>
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-ink-950/80 backdrop-blur-xl border-b border-white/[0.06] py-3' : 'py-5'}`}>
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-                    {/* Logo */}
+                    
                     <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-accent to-emerald-dark flex items-center justify-center shadow-glow-emerald">
                             <Sparkles className="w-4 h-4 text-ink-950" strokeWidth={2.5} />
@@ -31,7 +30,7 @@ const NavSection = () => {
                         </span>
                     </div>
 
-                    {/* Desktop Links */}
+                    
                     <div className="hidden md:flex items-center gap-8">
                         {['Features', 'How It Works', 'Tech Stack'].map((item) => (
                             <a key={item} href={`#${item.toLowerCase().replace(/ /g, '-')}`} className="text-sm text-bone-300 hover:text-bone-50 transition-colors">
@@ -40,7 +39,6 @@ const NavSection = () => {
                         ))}
                     </div>
 
-                    {/* CTA */}
                     <div className="hidden md:flex items-center gap-3">
                         {!user ? (
                             <button onClick={() => navigate('/auth')} className="text-sm text-bone-200 hover:text-bone-50 transition-colors px-4 py-2">
@@ -58,13 +56,11 @@ const NavSection = () => {
                         </button>
                     </div>
 
-                    {/* Mobile hamburger */}
                     <button className="md:hidden text-bone-200" onClick={() => setMobileOpen(!mobileOpen)}>
                         {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                     </button>
                 </div>
 
-                {/* Mobile menu */}
                 {mobileOpen && (
                     <div className="md:hidden bg-ink-950/95 backdrop-blur-xl border-t border-white/[0.06] px-6 py-4 space-y-3">
                         {['Features', 'How It Works', 'Pricing', 'FAQ'].map((l) => (
