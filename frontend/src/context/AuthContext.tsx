@@ -56,7 +56,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + '/chat' },
+      // options: { redirectTo: window.location.origin + '/chat' },
+      options: {
+        redirectTo: 'https://financial-ai-assistant-dqds.vercel.app', // exact match to what's in Supabase
+    },
     })
     if (error) throw error
   }
