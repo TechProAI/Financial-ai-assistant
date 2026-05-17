@@ -99,6 +99,8 @@ export function AddHoldingForm({ onAdd }: Props) {
           <Input
         label="Ticker"
         placeholder="AAPL"
+        autoComplete="off"
+        spellCheck="false"
         {...register('ticker', { required: 'Required' })}
         error={errors.ticker?.message}
       />
@@ -134,6 +136,7 @@ export function AddHoldingForm({ onAdd }: Props) {
         type="number"
         step="0.01"
         placeholder="10"
+        autoComplete="off"
         {...register('quantity', {
           required: 'Required',
           min: { value: 0.000001, message: 'Must be > 0' },
@@ -146,6 +149,7 @@ export function AddHoldingForm({ onAdd }: Props) {
         type="number"
         step="0.01"
         placeholder="150.00"
+        autoComplete="off"
         {...register('avg_cost', {
           required: 'Required',
           min: { value: 0, message: 'Must be ≥ 0' },
