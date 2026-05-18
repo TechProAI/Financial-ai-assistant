@@ -80,26 +80,39 @@ class MarketDataService:
         raise last_error or MarketDataError(f"No data for ticker {ticker}")
 
     def _fetch_quote(self, ticker: str) -> Dict[str, Any]:
-        """Internal method that fetches a single quote without fallback logic."""
+        """Fetch one quote variant. Primary data from t.history() (works even when
+        Yahoo rate-limits t.info). Optional enrichment from t.info — wrapped in
+        try/except so a blocked info call doesn't kill the whole quote."""
         try:
             t = self._ticker(ticker)
-            info = t.info or {}
 
-            # Quick check: if info is mostly empty, this ticker doesn't exist
-            if not info.get("regularMarketPrice") and not info.get("previousClose"):
-                hist = t.history(period="5d")
-                if hist.empty:
-                    raise MarketDataError(f"No data for ticker {ticker}")
-            else:
-                hist = t.history(period="5d")
-                if hist.empty:
-                    raise MarketDataError(f"No data for ticker {ticker}")
+            # PRIMARY: history endpoint — not crumb-protected, works on cloud IPs
+            hist = t.history(period="5d")
+            if hist is None or (isinstance(hist, pd.DataFrame) and hist.empty):
+                raise MarketDataError(f"No historical data available for {ticker}")
 
             latest = hist.iloc[-1]
-            prev_close = info.get("previousClose") or (hist.iloc[-2]["Close"] if len(hist) > 1 else latest["Close"])
+            prev_close = float(hist.iloc[-2]["Close"]) if len(hist) > 1 else float(latest["Close"])
             price = float(latest["Close"])
-            change = price - float(prev_close)
-            change_pct = (change / float(prev_close) * 100) if prev_close else 0.0
+            change = price - prev_close
+            change_pct = (change / prev_close * 100) if prev_close else 0.0
+
+            currency = "INR" if ticker.endswith((".NS", ".BO")) else "USD"
+
+            # OPTIONAL: info enrichment — try, but never fail because of it
+            company_name = ticker
+            market_cap = None
+            pe_ratio = None
+            sector = None
+            try:
+                info = t.info or {}
+                company_name = info.get("longName") or info.get("shortName") or ticker
+                market_cap = info.get("marketCap")
+                pe_ratio = info.get("trailingPE")
+                sector = info.get("sector")
+                currency = info.get("currency", currency)
+            except Exception as e:
+                logger.info("info_enrichment_skipped", ticker=ticker, reason=str(e))
 
             return {
                 "ticker": ticker,
@@ -107,19 +120,19 @@ class MarketDataService:
                 "change": round(change, 2),
                 "change_percent": round(change_pct, 2),
                 "volume": int(latest.get("Volume", 0)),
-                "market_cap": info.get("marketCap"),
-                "pe_ratio": info.get("trailingPE"),
+                "market_cap": market_cap,
+                "pe_ratio": pe_ratio,
                 "day_high": round(float(latest.get("High", price)), 2),
                 "day_low": round(float(latest.get("Low", price)), 2),
-                "company_name": info.get("longName", ticker),
-                "sector": info.get("sector"),
-                "currency": info.get("currency", "USD"),
+                "company_name": company_name,
+                "sector": sector,
+                "currency": currency,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
             }
         except MarketDataError:
             raise
         except Exception as e:
-            logger.error("quote_fetch_failed", ticker=ticker, error=str(e))
+            logger.error("quote_fetch_error", ticker=ticker, error=str(e), exc_info=True)
             raise MarketDataError(f"Failed to fetch quote for {ticker}: {e}") from e
 
     def get_history(self, ticker: str, period: str = "1mo", interval: str = "1d") -> List[Dict[str, Any]]:
