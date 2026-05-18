@@ -107,7 +107,8 @@ class MarketDataService:
 
             # Try to get historical data as a validation check
             hist = t.history(period="5d")
-            if hist.empty:
+            # FIX: Check for None OR empty DataFrame
+            if hist is None or (isinstance(hist, pd.DataFrame) and hist.empty):
                 raise MarketDataError(f"No historical data available for {ticker}")
 
             latest = hist.iloc[-1]
@@ -174,7 +175,8 @@ class MarketDataService:
                 logger.info("fetching_history", ticker=try_ticker, period=period)
                 hist = self._ticker(try_ticker).history(period=period, interval=interval)
                 
-                if hist.empty:
+                # FIX: Check for None OR empty DataFrame
+                if hist is None or (isinstance(hist, pd.DataFrame) and hist.empty):
                     raise MarketDataError(f"No historical data for {try_ticker}")
 
                 records = [
