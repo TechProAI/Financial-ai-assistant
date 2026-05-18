@@ -121,12 +121,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (watchlistRes.status === 'fulfilled' && watchlistRes.value.length > 0) {
           setWatchlist(watchlistRes.value.map((w: any) => w.ticker))
         } else {
-          // Defaults for new users
-          const defaults = ['RELIANCE', 'TCS', 'INFY']
-          setWatchlist(defaults)
-          for (const t of defaults) {
-            addToWatchlist(t).catch(() => {})
-          }
+          setWatchlist([])
         }
       } catch (err) {
         console.error('Data load error:', err)
