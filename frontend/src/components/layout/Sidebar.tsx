@@ -131,9 +131,32 @@ export function Sidebar() {
         </div>
       </div>
     </aside>
-    <Modal open={open} onClose={() => setOpen(false)}>
-        <h2 className="text-lg font-semibold text-center text-black">Are you sure</h2>
-        <button onClick={handleLogout} className='bg-green-500 text-white rounded-md pt-2 pb-2 pr-5 pl-5'>Logout</button>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <div className="flex flex-col gap-4 p-2 min-w-[320px]">
+          <div>
+            <h2 className="font-display text-xl font-semibold text-bone-50">
+              Log out of Finnie?
+            </h2>
+            <p className="text-sm text-bone-400 mt-1">
+              You'll need to sign in again to access your portfolio and chats.
+            </p>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-2">
+            <button
+              onClick={() => setOpen(false)}
+              className="px-4 py-2 rounded-md text-sm font-medium text-bone-200 hover:text-bone-50 border border-ink-700 hover:bg-ink-800 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-md text-sm font-medium text-crimson-accent bg-crimson-accent/10 hover:bg-crimson-accent/20 border border-crimson-accent/30 transition-colors"
+            >
+              Log out
+            </button>
+          </div>
+        </div>
       </Modal>
     </>
   )
