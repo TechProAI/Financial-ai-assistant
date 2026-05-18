@@ -57,46 +57,26 @@ class MarketDataService:
         ticker = ticker.upper().strip()
         cached = self._cache.get(f"quote:{ticker}")
         if cached:
-            logger.info("cache_hit", ticker=ticker)
             return cached
 
-        # Build list of tickers to try
+        # Try the ticker as-is first, then with .NS suffix for Indian stocks
         tickers_to_try = [ticker]
-        
-        # If it's already .NS or .BO, no need to add suffix again
         if "." not in ticker and not ticker.startswith("^"):
-            # Try with .NS suffix for potential Indian stocks
             tickers_to_try.append(f"{ticker}.NS")
-        
-        # Also try without .NS in case someone passed INFY.NS but it works better without
-        if ticker.endswith(".NS"):
-            base = ticker.replace(".NS", "")
-            if base not in tickers_to_try:
-                tickers_to_try.append(base)
 
         last_error = None
         for try_ticker in tickers_to_try:
             try:
-                logger.info("fetching_quote", ticker=try_ticker)
                 quote = self._fetch_quote(try_ticker)
-                
-                # Cache the result
                 self._cache.set(f"quote:{ticker}", quote)
+                # Also cache under the resolved ticker
                 if try_ticker != ticker:
                     self._cache.set(f"quote:{try_ticker}", quote)
-                
-                logger.info("quote_success", ticker=ticker, resolved_to=try_ticker)
                 return quote
             except MarketDataError as e:
-                logger.warning("quote_fetch_failed_for_variant", ticker=try_ticker, error=str(e))
                 last_error = e
                 continue
-            except Exception as e:
-                logger.warning("unexpected_error_quote", ticker=try_ticker, error=str(e))
-                last_error = MarketDataError(f"Failed to fetch quote for {try_ticker}: {e}")
-                continue
 
-        # If all attempts fail, raise the last error
         raise last_error or MarketDataError(f"No data for ticker {ticker}")
 
     def _fetch_quote(self, ticker: str) -> Dict[str, Any]:
@@ -105,28 +85,21 @@ class MarketDataService:
             t = self._ticker(ticker)
             info = t.info or {}
 
-            # Try to get historical data as a validation check
-            hist = t.history(period="5d")
-            # FIX: Check for None OR empty DataFrame
-            if hist is None or (isinstance(hist, pd.DataFrame) and hist.empty):
-                raise MarketDataError(f"No historical data available for {ticker}")
+            # Quick check: if info is mostly empty, this ticker doesn't exist
+            if not info.get("regularMarketPrice") and not info.get("previousClose"):
+                hist = t.history(period="5d")
+                if hist.empty:
+                    raise MarketDataError(f"No data for ticker {ticker}")
+            else:
+                hist = t.history(period="5d")
+                if hist.empty:
+                    raise MarketDataError(f"No data for ticker {ticker}")
 
             latest = hist.iloc[-1]
-            
-            # Get previous close price
-            prev_close = info.get("previousClose")
-            if not prev_close and len(hist) > 1:
-                prev_close = hist.iloc[-2]["Close"]
-            else:
-                prev_close = latest["Close"] if not prev_close else prev_close
-            
+            prev_close = info.get("previousClose") or (hist.iloc[-2]["Close"] if len(hist) > 1 else latest["Close"])
             price = float(latest["Close"])
             change = price - float(prev_close)
             change_pct = (change / float(prev_close) * 100) if prev_close else 0.0
-
-            # Determine currency based on ticker suffix
-            currency = "INR" if ticker.endswith(".NS") or ticker.endswith(".BO") else "USD"
-            currency = info.get("currency", currency)  # Override with API info if available
 
             return {
                 "ticker": ticker,
@@ -140,13 +113,13 @@ class MarketDataService:
                 "day_low": round(float(latest.get("Low", price)), 2),
                 "company_name": info.get("longName", ticker),
                 "sector": info.get("sector"),
-                "currency": currency,
+                "currency": info.get("currency", "USD"),
                 "timestamp": datetime.now(timezone.utc).isoformat(),
             }
         except MarketDataError:
             raise
         except Exception as e:
-            logger.error("quote_fetch_error", ticker=ticker, error=str(e), exc_info=True)
+            logger.error("quote_fetch_failed", ticker=ticker, error=str(e))
             raise MarketDataError(f"Failed to fetch quote for {ticker}: {e}") from e
 
     def get_history(self, ticker: str, period: str = "1mo", interval: str = "1d") -> List[Dict[str, Any]]:
@@ -155,28 +128,17 @@ class MarketDataService:
         cache_key = f"hist:{ticker}:{period}:{interval}"
         cached = self._cache.get(cache_key)
         if cached:
-            logger.info("cache_hit_history", ticker=ticker)
             return cached
 
-        # Build list of tickers to try
         tickers_to_try = [ticker]
-        
         if "." not in ticker and not ticker.startswith("^"):
             tickers_to_try.append(f"{ticker}.NS")
-        
-        if ticker.endswith(".NS"):
-            base = ticker.replace(".NS", "")
-            if base not in tickers_to_try:
-                tickers_to_try.append(base)
 
         last_error = None
         for try_ticker in tickers_to_try:
             try:
-                logger.info("fetching_history", ticker=try_ticker, period=period)
                 hist = self._ticker(try_ticker).history(period=period, interval=interval)
-                
-                # FIX: Check for None OR empty DataFrame
-                if hist is None or (isinstance(hist, pd.DataFrame) and hist.empty):
+                if hist.empty:
                     raise MarketDataError(f"No historical data for {try_ticker}")
 
                 records = [
@@ -190,17 +152,10 @@ class MarketDataService:
                     }
                     for idx, row in hist.iterrows()
                 ]
-                
                 self._cache.set(cache_key, records)
-                logger.info("history_success", ticker=ticker, resolved_to=try_ticker, records=len(records))
                 return records
             except MarketDataError as e:
-                logger.warning("history_fetch_failed_for_variant", ticker=try_ticker, error=str(e))
                 last_error = e
-                continue
-            except Exception as e:
-                logger.warning("unexpected_error_history", ticker=try_ticker, error=str(e))
-                last_error = MarketDataError(f"Failed to fetch history for {try_ticker}: {e}")
                 continue
 
         raise last_error or MarketDataError(f"No historical data for {ticker}")
@@ -215,32 +170,11 @@ class MarketDataService:
         return out
 
     def search_symbol(self, query: str) -> List[Dict[str, str]]:
-        """Search for symbols, with priority to Indian stocks if applicable."""
         try:
-            # yfinance Lookup
-            result = yf.Lookup(query).get_stock(count=10)
+            result = yf.Lookup(query).get_stock(count=5)
             if result is None or result.empty:
                 return []
-            
-            # Convert to list of dicts
-            results = [
-                {"symbol": str(idx), "name": str(row.get("shortName", ""))}
-                for idx, row in result.iterrows()
-            ]
-            
-            # If query looks like an Indian stock, also include .NS versions
-            if len(results) > 0 and len(query) <= 10:
-                query_upper = query.upper()
-                # Check if first result might be Indian
-                first_symbol = results[0]["symbol"]
-                if not first_symbol.endswith(".NS") and "." not in first_symbol:
-                    # Add .NS variant
-                    results.insert(0, {
-                        "symbol": f"{query_upper}.NS",
-                        "name": f"{results[0]['name']} (NSE)"
-                    })
-            
-            return results[:5]  # Limit to top 5
+            return [{"symbol": idx, "name": row.get("shortName", "")} for idx, row in result.iterrows()]
         except Exception as e:
             logger.warning("symbol_search_failed", query=query, error=str(e))
             return []
