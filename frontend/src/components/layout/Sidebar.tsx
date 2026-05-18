@@ -132,17 +132,15 @@ export function Sidebar() {
       </div>
     </aside>
       <Modal open={open} onClose={() => setOpen(false)}>
-        <div className="flex flex-col gap-4 p-2 min-w-[320px]">
-          <div>
-            <h2 className="font-display text-xl font-semibold text-bone-50">
-              Log out of Finnie?
-            </h2>
-            <p className="text-sm text-bone-400 mt-1">
-              You'll need to sign in again to access your portfolio and chats.
-            </p>
-          </div>
+        <div>
+          <h2 className="font-display text-xl font-semibold text-bone-50">
+            Log out of Finnie?
+          </h2>
+          <p className="text-sm text-bone-400 mt-1">
+            You'll need to sign in again to access your portfolio and chats.
+          </p>
 
-          <div className="flex justify-end gap-2 mt-2">
+          <div className="flex justify-end gap-2 mt-6">
             <button
               onClick={() => setOpen(false)}
               className="px-4 py-2 rounded-md text-sm font-medium text-bone-200 hover:text-bone-50 border border-ink-700 hover:bg-ink-800 transition-colors"
