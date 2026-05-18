@@ -8,13 +8,22 @@ const NavSection = () => {
     const [scrolled, setScrolled] = useState(false)
     const [mobileOpen, setMobileOpen] = useState(false)
     const navigate = useNavigate()
-    const { user } = useAuth()
+    const { user, setMode } = useAuth()
 
     useEffect(() => {
         const h = () => setScrolled(window.scrollY > 40)
         window.addEventListener('scroll', h, { passive: true })
         return () => window.removeEventListener('scroll', h)
     }, [])
+
+    const handleLogin = () => {
+        setMode("login")
+        navigate("/auth")
+    }
+    const handleSignup = () => {
+        setMode("signup")
+        navigate("/auth")
+    }
 
     return (
         <>
@@ -41,7 +50,7 @@ const NavSection = () => {
 
                     <div className="hidden md:flex items-center gap-3">
                         {!user ? (
-                            <button onClick={() => navigate('/auth')} className="text-sm text-bone-200 hover:text-bone-50 transition-colors px-4 py-2">
+                            <button onClick={handleLogin} className="text-sm text-bone-200 hover:text-bone-50 transition-colors px-4 py-2">
                                 Login
                             </button>
                         ) : ""
@@ -49,7 +58,7 @@ const NavSection = () => {
                         }
 
                         <button
-                            onClick={() => navigate('/chat')}
+                            onClick={handleSignup}
                             className="text-sm font-medium bg-emerald-accent text-ink-950 px-5 py-2 rounded-lg hover:bg-emerald-deep transition-colors"
                         >
                             Get Started

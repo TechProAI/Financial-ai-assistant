@@ -2,7 +2,11 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from '
 import { supabase } from '@/lib/supabase'
 import type { User, Session } from '@supabase/supabase-js'
 
+export type AuthType = "login" | "signup"
+
 interface AuthContextValue {
+  authType: AuthType
+  setMode: (m: AuthType) => void
   user: User | null
   session: Session | null
   loading: boolean
@@ -18,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const [authType, setAuthType] = useState<AuthType>("login")
 
   useEffect(() => {
     // Get initial session
@@ -57,9 +62,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/chat`, },
-    //   options: {
-    //     redirectTo: 'https://financial-ai-assistant-dqds.vercel.app', // exact match to what's in Supabase
-    // },
     })
     if (error) throw error
   }
@@ -69,8 +71,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error
   }
 
+  
+  const setMode = (m: AuthType) => {
+    setAuthType(m)
+  }
+  
+
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ authType, setMode, user, session, loading, signUp, signIn, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   )

@@ -4,13 +4,12 @@ import { Sparkles, Mail, Lock, User, ArrowRight } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 
 export function AuthPage() {
-  const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { signIn, signUp, signInWithGoogle } = useAuth()
+  const { authType, setMode, signIn, signUp, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -19,7 +18,7 @@ export function AuthPage() {
     setLoading(true)
 
     try {
-      if (mode === 'login') {
+      if (authType === 'login') {
         await signIn(email, password)
       } else {
         await signUp(email, password, name)
@@ -54,10 +53,10 @@ export function AuthPage() {
         
         <div className="bg-ink-900/60 border border-white/[0.06] rounded-2xl p-7">
           <h2 className="font-display text-xl font-semibold text-bone-50 text-center mb-1">
-            {mode === 'login' ? 'Welcome back' : 'Create your account'}
+            {authType === 'login' ? 'Welcome back' : 'Create your account'}
           </h2>
           <p className="text-sm text-bone-400 text-center mb-6">
-            {mode === 'login'
+            {authType === 'login'
               ? 'Sign in to access your chats and portfolio'
               : 'Start your financial learning journey'}
           </p>
@@ -83,7 +82,7 @@ export function AuthPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === 'signup' && (
+            {authType === 'signup' && (
               <div>
                 <label className="text-[11px] uppercase tracking-widest text-bone-400 block mb-1.5">Name</label>
                 <div className="relative">
@@ -142,18 +141,18 @@ export function AuthPage() {
               disabled={loading}
               className="w-full flex items-center justify-center gap-2 bg-emerald-accent text-ink-950 font-semibold py-2.5 rounded-lg hover:bg-emerald-deep transition-colors disabled:opacity-50"
             >
-              {loading ? 'Please wait...' : mode === 'login' ? 'Sign In' : 'Create Account'}
+              {loading ? 'Please wait...' : authType === 'login' ? 'Sign In' : 'Create Account'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
           <p className="text-sm text-bone-400 text-center mt-5">
-            {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
+            {authType === 'login' ? "Don't have an account?" : 'Already have an account?'}{' '}
             <button
-              onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError('') }}
+              onClick={() => { setMode(authType === 'login' ? 'signup' : 'login'); setError('') }}
               className="text-emerald-accent hover:underline"
             >
-              {mode === 'login' ? 'Sign up' : 'Sign in'}
+              {authType === 'login' ? 'Sign up' : 'Sign in'}
             </button>
           </p>
         </div>
